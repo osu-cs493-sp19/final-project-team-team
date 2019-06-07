@@ -9,14 +9,15 @@ const {generateAuthToken, requireAuthentication,isAdmin} = require('../lib/auth'
 const { validateAgainstSchema } = require('../lib/validation');
 
 router.post('/', isAdmin, async (req, res) => {
-  console.log(req.user);
-  console.log(req.body);
   if (validateAgainstSchema(req.body,UserSchema)) {
     if(req.body.role==='instructor' && req.user!=='admin' || req.body.role==='admin' && req.user!=='admin'){
       res.status(403).send({
         error: "Unauthorized to add admin or instructor"
       });
-    }else if(req.body.role==='student' || req.body.role==='admin' || req.body.role==='instructor'){
+    }else{
+      if( req.body.role !== 'instructor' && req.body.role !== 'admin' ){
+        req.body.role = "student";
+      }
       try {
         const id = await insertNewUser(req.body);
         res.status(201).send({
@@ -28,10 +29,6 @@ router.post('/', isAdmin, async (req, res) => {
           error: "error inserting new user. Try against later."
         });
       }
-    } else {
-      res.status(400).send({
-        error: "request body does not contain a valid user role."
-      });
     }
   } else {
     res.status(400).send({

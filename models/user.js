@@ -11,7 +11,7 @@ const UserSchema = {
   name: { required: true },
   email: { required: true },
   password: { required: true },
-  role: {require: true }
+  role: {require: false }
 };
 exports.UserSchema = UserSchema;
 
