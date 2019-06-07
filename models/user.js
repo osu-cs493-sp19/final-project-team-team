@@ -24,7 +24,7 @@ async function insertNewUser(user) {
   userToInsert.password = passwordHash;
 
   const result = await collection.insertOne(userToInsert);
-  console.log(result);
+  //console.log(result);
   return result.insertedId;
 }
 exports.insertNewUser = insertNewUser;
@@ -32,6 +32,7 @@ exports.insertNewUser = insertNewUser;
 async function getUserById(id, includePassword){
   const db = getDBReference();
   const collection = db.collection('users');
+  //console.log(id);
   if (!ObjectId.isValid(id)) {
     return null;
   } else {
@@ -40,31 +41,28 @@ async function getUserById(id, includePassword){
       .find({ _id: new ObjectId(id) })
       .project(projection)
       .toArray();
+    //console.log(results);
     return results[0];
   }
 };
 exports.getUserById = getUserById;
 
-// async function getUserByEmail(id, includePassword){
-//   return new Promise((resolve, reject) => {
-//     mysqlPool.query(
-//       'SELECT * FROM users WHERE email = ?',
-//       [ id ],
-//       (err, results) => {
-//         if (err) {
-//           reject(err);
-//         } else {
-//           //console.log(results);
-//           if(!includePassword){delete results[0]["password"];}
-//           resolve(results[0]);
-//         }
-//       }
-//     );
-//   });
-// }
+async function getUserByEmail(email, includePassword){
+  const db = getDBReference();
+  const collection = db.collection('users');
+  console.log(email);
+
+  const projection = includePassword ? {} : { password: 0 };
+  const results = await collection
+    .find({ email: email })
+    .project(projection)
+    .toArray();
+  console.log(results);
+  return results[0];
+};
 
 exports.validateUser = async function (id, password) {
-  const user = await getUserById(id, true);
+  const user = await getUserByEmail(id, true);
   const authenticated = user && await bcrypt.compare(password, user.password);
-  return authenticated;
+  return [authenticated, user._id];
 };
