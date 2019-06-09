@@ -42,3 +42,55 @@ async function getCoursesPage(page, query) {
     };
   }
   exports.getCoursesPage = getCoursesPage;
+
+  async function getCourseById(id) {
+    const db = getDBReference();
+    const collection = db.collection('courses');
+    if (!ObjectId.isValid(id)) {
+      return null;
+    } else {
+      const results = await collection
+        .find({ _id: new ObjectId(id) })
+        .toArray();
+      return results[0];
+    }
+  }
+  exports.getCourseById = getCourseById;
+
+  async function insertNewCourse(course) {
+    course = extractValidFields(course, CourseSchema);
+    const db = getDBReference();
+    const collection = db.collection('courses');
+    const result = await collection.insertOne(course);
+    return result.insertedId;
+  }
+  exports.insertNewCourse = insertNewCourse;
+
+  async function updateCourseById(id, patch) {
+    const db = getDBReference();
+    const collection = db.collection('courses');
+    if (!ObjectId.isValid(id)) {
+      return false;
+    } else {
+      const result = await collection.updateOne(
+        { _id: ObjectId(id)}, 
+        {$set: patch}
+      );
+      return result.matchedCount > 0;
+    }
+  }
+  exports.updateCourseById = updateCourseById;
+
+  async function deleteCourseById(id) {
+    const db = getDBReference();
+    const collection = db.collection('courses');
+    if (!ObjectId.isValid(id)) {
+      return false;
+    } else {
+      const result = await collection.deleteOne({
+        _id: new ObjectId(id)
+      });
+      return result.deletedCount > 0;
+    }
+  }
+  exports.deleteCourseById = deleteCourseById;

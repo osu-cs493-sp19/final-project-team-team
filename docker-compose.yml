@@ -5,8 +5,10 @@ services:
     build: .
     image: team-team-final
     restart: always
+    depends_on:
+      - mongodb
     ports:
-      - 8002:8002
+      - 8000:8000
     environment:
       MONGO_DATABASE: ${MONGO_DATABASE}
       MONGO_USER: ${MONGO_USER}
