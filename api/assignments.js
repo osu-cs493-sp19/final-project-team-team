@@ -1,14 +1,44 @@
 const router = require('express').Router();
 
-const { validateAgainstSchema } = require('../lib/validation');
+const crypto = require('crypto');
+const multer = require('multer');
+
+const { validateAgainstSchema, validateDate } = require('../lib/validation');
 const {
   AssignmentSchema,
-  validateDate,
   getAssignmentById, 
   deleteAssignmentById, 
   insertNewAssignment,
-  updateAssignmentById 
+  updateAssignmentById,
+  validateAssignmentID 
 } = require('../models/assignment');
+
+const { 
+  SubmissionSchema,
+  saveSubmission,
+  getSubmissionsPageByID, 
+  removeUploadedFile
+} = require('../models/submission');
+
+const fileTypes = {
+  'text/plain':       'txt',
+  'application/pdf':  'pdf',
+  'image/jpeg':       'jpg',
+  'image/png':        'png'
+};
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: `${__dirname}/uploads`,
+    filename: (req, file, callback) => {
+      const basename = crypto.pseudoRandomBytes(16).toString('hex');
+      const extension = fileTypes[file.mimetype];
+      callback(null, `${basename}.${extension}`);
+    }
+  }),
+  fileFilter: (req, file, callback) => {
+    callback(null, !!fileTypes[file.mimetype]);
+  }
+});
 
 router.post('/', async (req, res, next) => {
   if (validateAgainstSchema(req.body, AssignmentSchema)) {
@@ -101,6 +131,69 @@ router.delete('/:id', async (req, res, next) => {
     console.error(err);
     res.status(500).send({
       error: "Unable to delete assignment."
+    });
+  }
+});
+
+router.post('/:id/submissions', upload.single('file'), async (req, res, next) => {
+  if (validateAgainstSchema(req.body, SubmissionSchema)) {
+    if (validateDate(req.body.timestamp)) {
+      if (validateAssignmentID(req.params.id)) {
+        try {
+          const sub = {
+            path: req.file.path,
+            filename: req.file.filename,
+            contentType: req.file.mimetype,
+            assignmentID: req.body.assignmentID,
+            studentID: req.body.studentID,
+            timestamp: req.body.timestamp
+          };
+          const id = await saveSubmission(sub);
+          await removeUploadedFile(req.file);
+
+          res.status(201).send({ id: id });
+        } catch (err) {
+          console.error(err);
+          res.status(500).send({
+            error: "Error inserting submission into DB."
+          });
+        }
+      } else {
+        next();
+      }
+    } else {
+      res.status(400).send({
+        error: "Request body does not contain a valid timestamp for submission. Timestamp must be in ISO 8601 format."
+      });
+    }
+  } else {
+    res.status(400).send({
+      error: "Request body does not contain a valid submission."
+    });
+  }
+});
+
+router.get('/:id/submissions', async (req, res, next) => {
+  try {
+    if (validateAssignmentID(req.params.id)) {
+      const submissionPage = await getSubmissionsPageByID((parseInt(req.query.page) || 1), req.params.id, req.query.studentID);
+      submissionPage.links = {};
+      if (submissionPage.page < submissionPage.totalPages) {
+          submissionPage.links.nextPage = `/assignments/${req.params.id}/submissions?page=${submissionPage.page + 1}`;
+          submissionPage.links.lastPage = `/assignments/${req.params.id}/submissions?page=${submissionPage.totalPages}`;
+      }
+      if (submissionPage.page > 1) {
+          submissionPage.links.prevPage = `/assignments/${req.params.id}/submissions?page=${submissionPage.page - 1}`;
+          submissionPage.links.firstPage = `/assignments/${req.params.id}/submissions?page=1`;
+      }
+      res.status(200).send(submissionPage);
+    } else {
+      next();
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({
+      error: "Error fetching submissions page. Try again later."
     });
   }
 });
