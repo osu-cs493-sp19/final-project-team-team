@@ -1,4 +1,4 @@
-const { ObjectId } = require('mongodb');
+const { ObjectId } = require('mongodb').ObjectID;
 
 const { getDBReference } = require('../lib/mongo');
 const { extractValidFields } = require('../lib/validation');
@@ -54,16 +54,16 @@ async function updateAssignmentById(id) {
 exports.updateAssignmentById = updateAssignmentById;
 
 async function deleteAssignmentById(id) {
-    const collection = db.collection('assignments');
-    const result = await collection.deleteOne({
-        _id: new ObjectId(id)
-    });
-    return result.deletedCount > 0;
+  const collection = db.collection('assignments');
+  const result = await collection.deleteOne({
+    _id: new ObjectId(id)
+  });
+  return result.deletedCount > 0;
 }
 exports.deleteAssignmentById = deleteAssignmentById;
 
 function validateDate(date) {
-    // Date validation here
-    return true;
+  // Date validation here
+  return true;
 }
 exports.validateDate = validateDate;
