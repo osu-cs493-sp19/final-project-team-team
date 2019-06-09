@@ -3,7 +3,7 @@ const redis = require('redis');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
-const api = require('./api');
+const apiRouter = require('./api');
 const { connectToDB } = require('./lib/mongo');
 const redisPort = process.env.REDIS_PORT || 6379;
 const redisHost = process.env.REDIS_HOST;
@@ -90,7 +90,7 @@ app.use(rateLimit);
  * top-level router lives in api/index.js.  That's what we include here, and
  * it provides all of the routes.
  */
-app.use('/', api);
+app.use('/', apiRouter);
 
 app.use('*', function (req, res, next) {
   res.status(404).json({
@@ -99,7 +99,7 @@ app.use('*', function (req, res, next) {
 });
 
 connectToDB(() => {
-  app.listen(port, function() {
-    console.log("== Server is running on port", port);
+  app.listen(port, () => {
+    console.log("== Server is listening on port:", port);
   });
 });
