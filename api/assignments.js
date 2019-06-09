@@ -6,7 +6,8 @@ const {
   validateDate,
   getAssignmentById, 
   deleteAssignmentById, 
-  insertNewAssignment 
+  insertNewAssignment,
+  updateAssignmentById 
 } = require('../models/assignment');
 
 router.post('/', async (req, res, next) => {
@@ -35,9 +36,7 @@ router.post('/', async (req, res, next) => {
 
 router.get('/:id', async (req, res, next) => {
   try {
-    console.log(req.params.id);
     const assignment = await getAssignmentById(req.params.id);
-    console.log(assignment);
     if (assignment) {
       res.status(200).send(assignment);
     } else {
@@ -51,10 +50,37 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
-router.patch('/:id', (req, res, next) => {
-  res.status(500).send({
-    error: "Boo."
-  });
+router.patch('/:id', async (req, res, next) => {
+  try {
+    var patch = {};
+    if (req.body) {
+      if (req.body.courseID) {
+        patch.courseID = req.body.courseID;
+      }
+      if (req.body.title) {
+        patch.title = req.body.title;
+      }
+      if (req.body.points) {
+        patch.points = req.body.points;
+      }
+      if (req.body.due) {
+        patch.due = req.body.due;
+      }
+      const successful = await updateAssignmentById(req.params.id, patch);
+      if (successful) {
+        res.status(200).send({});
+      }
+    } else {
+      res.status(400).send({
+        error: "Invalid body for assignment patch request."
+      });
+    }
+  } catch(err) {
+    console.error(err);
+    res.status(500).send({
+      error: "Error patching assignment. Try again later."
+    });
+  }
 });
 
 router.delete('/:id', async (req, res, next) => {
@@ -66,6 +92,7 @@ router.delete('/:id', async (req, res, next) => {
       next();
     }
   } catch (err) {
+    console.error(err);
     res.status(500).send({
       error: "Unable to delete assignment."
     });

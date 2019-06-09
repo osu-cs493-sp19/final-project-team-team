@@ -7,7 +7,7 @@ const { extractValidFields } = require('../lib/validation');
  * Schema describing required/optional fields of an assignment object.
  */
 const AssignmentSchema = {
-  courseId: { required: true },
+  courseID: { required: true },
   title: { required: true },
   points: { required: true },
   due: { required: true }
@@ -48,12 +48,24 @@ async function getAssignmentById(id) {
 }
 exports.getAssignmentById = getAssignmentById;
 
-async function updateAssignmentById(id) {
-    
+async function updateAssignmentById(id, patch) {
+  console.log(patch);
+  const db = getDBReference();
+  const collection = db.collection('assignments');
+  if (!ObjectId.isValid(id)) {
+    return false;
+  } else {
+    const result = await collection.updateOne(
+      { _id: ObjectId(id)}, 
+      {$set: patch}
+    );
+    return result.matchedCount > 0;
+  }
 }
 exports.updateAssignmentById = updateAssignmentById;
 
 async function deleteAssignmentById(id) {
+  const db = getDBReference();
   const collection = db.collection('assignments');
   const result = await collection.deleteOne({
     _id: new ObjectId(id)
