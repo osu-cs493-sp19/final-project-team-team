@@ -24,7 +24,7 @@ router.post('/', async (req, res, next) => {
       }
     } else {
       res.status(400).send({
-        error: "Request body does not contain a valid due date for assignment."
+        error: "Request body does not contain a valid due date for assignment. Due date must be in ISO 8601 format."
       });
     }
   } else {
@@ -64,7 +64,13 @@ router.patch('/:id', async (req, res, next) => {
         patch.points = req.body.points;
       }
       if (req.body.due) {
-        patch.due = req.body.due;
+        if (validateDate(req.body.due)) {
+          patch.due = req.body.due;
+        } else {
+          res.status(400).send({
+            error: "Request body does not contain a valid due date for assignment. Due date must be in ISO 8601 format."
+          });
+        }
       }
       const successful = await updateAssignmentById(req.params.id, patch);
       if (successful) {

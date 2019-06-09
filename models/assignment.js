@@ -1,4 +1,5 @@
 const { ObjectId } = require('mongodb').ObjectID;
+const moment = require('moment');
 
 const { getDBReference } = require('../lib/mongo');
 const { extractValidFields } = require('../lib/validation');
@@ -49,7 +50,6 @@ async function getAssignmentById(id) {
 exports.getAssignmentById = getAssignmentById;
 
 async function updateAssignmentById(id, patch) {
-  console.log(patch);
   const db = getDBReference();
   const collection = db.collection('assignments');
   if (!ObjectId.isValid(id)) {
@@ -75,7 +75,6 @@ async function deleteAssignmentById(id) {
 exports.deleteAssignmentById = deleteAssignmentById;
 
 function validateDate(date) {
-  // Date validation here
-  return true;
+  return moment(date, "YYYY-MM-DDTHH:mm:ss-HH:mm", true).isValid();
 }
 exports.validateDate = validateDate;
