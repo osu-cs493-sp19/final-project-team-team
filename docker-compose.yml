@@ -6,7 +6,7 @@ services:
     image: team-team-final
     restart: always
     ports:
-      - 8000:8000
+      - 8002:8002
     environment:
       MONGO_DATABASE: ${MONGO_DATABASE}
       MONGO_USER: ${MONGO_USER}

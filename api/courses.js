@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { validateAgainstSchema } = require('../lib/validation');
-
+const { getCoursesPage } = require('../models/course');
 
 router.get('/', async (req, res) => {
     try {
@@ -45,3 +45,6 @@ router.get('/', async (req, res) => {
         });
     }
   });
+
+
+module.exports = router;
