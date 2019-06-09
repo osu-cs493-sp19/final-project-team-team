@@ -5,12 +5,12 @@
 const router = require('express').Router();
 
 const {UserSchema, insertNewUser, getUserById, validateUser} = require('../models/user');
-const {generateAuthToken, requireAuthentication,isAdmin} = require('../lib/auth');
+const {generateAuthToken, requireIdAuth, requireRoleAuth} = require('../lib/auth');
 const { validateAgainstSchema } = require('../lib/validation');
 
-router.post('/', isAdmin, async (req, res) => {
+router.post('/', requireRoleAuth, async (req, res) => {
   if (validateAgainstSchema(req.body,UserSchema)) {
-    if(req.body.role==='instructor' && req.user!=='admin' || req.body.role==='admin' && req.user!=='admin'){
+    if(req.body.role==='instructor' && req.role!=='admin' || req.body.role==='admin' && req.role!=='admin'){
       res.status(403).send({
         error: "Unauthorized to add admin or instructor"
       });
@@ -65,10 +65,10 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.get('/:id', requireAuthentication, async (req, res, next) => {
+router.get('/:id', requireIdAuth, async (req, res, next) => {
   //console.log("testing here");
   //console.log(req.params.id, req.user);
-  if (req.params.id == req.user || req.user === true) {
+  if (req.params.id == req.user) {
     try {
       const user = await getUserById(req.params.id, false);
       if (user) {
