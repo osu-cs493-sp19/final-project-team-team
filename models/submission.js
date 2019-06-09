@@ -20,7 +20,9 @@ function saveSubmission(sub) {
     const db = getDBReference();
     const bucket = new GridFSBucket(db, { bucketName: 'submissions'} );
 
+    console.log(sub.contentType);
     const metadata = {
+      contentType: sub.contentType,
       assignmentID: sub.assignmentID,
       studentID: sub.studentID,
       timestamp: sub.timestamp
@@ -108,3 +110,10 @@ async function getSubmissionsPageByID(page, aId, sId) {
   };
 }
 exports.getSubmissionsPageByID = getSubmissionsPageByID;
+
+function getDownloadStreamByFilename(filename) {
+  const db = getDBReference();
+  const bucket = new GridFSBucket(db, { bucketName: 'submissions' });
+  return bucket.openDownloadStreamByName(filename);
+}
+exports.getDownloadStreamByFilename = getDownloadStreamByFilename;
