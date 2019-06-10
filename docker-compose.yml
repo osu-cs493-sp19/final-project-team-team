@@ -5,6 +5,8 @@ services:
     build: .
     image: team-team-final
     restart: always
+    depends_on:
+      - mongodb
     ports:
       - 8000:8000
     environment:
