@@ -142,3 +142,22 @@ async function getStudentsByCourseId (id) {
   }
 }
 exports.getStudentsByCourseId = getStudentsByCourseId;
+
+async function getStudentsCSV (id) { 
+  const db = getDBReference();
+  const coursesColl = db.collection('courses');
+  const usersColl = db.collection('users');
+  if (!ObjectId.isValid(id)) {
+    return null;
+  } else {
+    const students = await coursesColl
+      .find({ _id: new ObjectId(id) })
+      .project({ students: 1, _id: 0 })
+      .toArray();
+
+    const data = await usersColl
+      .find()
+    return students[0];
+  }
+}
+exports.getStudentsCSV = getStudentsCSV;
