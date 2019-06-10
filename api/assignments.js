@@ -21,9 +21,10 @@ const {
   removeUploadedFile
 } = require('../models/submission');
 
-// const {
-//   getCourseById
-// } = require('../models/course');
+const {
+  getCourseById,
+  getStudentsByCourseId
+} = require('../models/course');
 
 const fileTypes = {
   'text/plain':       'txt',
@@ -46,11 +47,7 @@ const upload = multer({
 });
 
 router.post('/', requireRoleAuth, requireIdAuth, async (req, res, next) => {
-  // Get course here
-  // const course = await getCourseById(req.body.courseID);
-  const course = {
-    instructorID: req.user
-  }
+  const course = await getCourseById(req.body.courseID);
 
   if (req.role === 'admin' || (req.role === 'instructor' && req.user == course.instructorID)) {
     if (validateAgainstSchema(req.body, AssignmentSchema)) {
@@ -98,13 +95,9 @@ router.get('/:id', async (req, res, next) => {
 });
 
 router.patch('/:id', requireRoleAuth, requireIdAuth, async (req, res, next) => {
-  // const assignment = await getAssignmentById(req.params.id);
-  // const course = await getCourseById(assignment.courseID);
-  const course = {
-    instructorID: req.user
-  }
+  const assignment = await getAssignmentById(req.params.id);
+  const course = await getCourseById(assignment.courseID);
 
-  console.log(req.role, req.user);
   if (req.role === 'admin' || (req.role === 'instructor' && req.user == course.instructorID)) {
     try {
       var patch = {};
@@ -150,13 +143,9 @@ router.patch('/:id', requireRoleAuth, requireIdAuth, async (req, res, next) => {
 });
 
 router.delete('/:id', requireRoleAuth, requireIdAuth, async (req, res, next) => {
-  // const assignment = await getAssignmentById(req.params.id);
-  // const course = await getCourseById(assignment.courseID);
-  const course = {
-    instructorID: req.user
-  }
+  const assignment = await getAssignmentById(req.params.id);
+  const course = await getCourseById(assignment.courseID);
 
-  console.log(req.role, req.user);
   if (req.role === 'admin' || (req.role === 'instructor' && req.user == course.instructorID)) {
     try {
       const deleteSuccessful = await deleteAssignmentById(req.params.id);
@@ -179,10 +168,11 @@ router.delete('/:id', requireRoleAuth, requireIdAuth, async (req, res, next) => 
 });
 
 router.post('/:id/submissions', requireRoleAuth, requireIdAuth, upload.single('file'), async (req, res, next) => {
-  // const assignment = await getAssignmentById(req.params.id);
+  const assignment = await getAssignmentById(req.params.id);
+  const results = await getStudentsByCourseId(assignment.courseID);
 
-  // if (req.role === 'student' && isEnrolledInCourse(req.user, assignment.courseID)) {
-  if (req.role === 'student') {  
+  console.log(results.students);
+  if (req.role === 'student' && results.students.includes(req.user)) {  
     if (validateAgainstSchema(req.body, SubmissionSchema)) {
       if (validateDate(req.body.timestamp)) {
         if (validateAssignmentID(req.params.id)) {
@@ -226,11 +216,8 @@ router.post('/:id/submissions', requireRoleAuth, requireIdAuth, upload.single('f
 });
 
 router.get('/:id/submissions', requireRoleAuth, requireIdAuth, async (req, res, next) => {
-  // const assignment = await getAssignmentById(req.params.id);
-  // const course = await getCourseById(assignment.courseID);
-  const course = {
-    instructorID: req.user
-  }
+  const assignment = await getAssignmentById(req.params.id);
+  const course = await getCourseById(assignment.courseID);
 
   if (req.role === 'admin' || (req.role === 'instructor' && req.user == course.instructorID)) {
     try {

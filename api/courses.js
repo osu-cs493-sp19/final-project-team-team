@@ -161,6 +161,12 @@ router.post('/:id/students', async(req, res, next) => {
             }
             if (ins || rem) {
                 res.status(200).send({});
+            } else if (await getCourseById(req.params.id)) {
+                res.status(400).send({
+                  error: "Request body does not contain any students to add or remove."
+                });
+            } else {
+              next();
             }
         }
         catch(err){
