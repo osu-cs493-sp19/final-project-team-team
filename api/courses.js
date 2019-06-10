@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const { parse } = require('json2csv');
 const { validateAgainstSchema } = require('../lib/validation');
 const { getCoursesPage,
         getCourseById,
@@ -8,6 +9,7 @@ const { getCoursesPage,
         addStudentsToCourse,
         removeStudentsFromCourse,
         getStudentsByCourseId,
+        getStudentsCSV,
         CourseSchema } = require('../models/course');
 
 router.get('/', async (req, res) => {
@@ -189,6 +191,30 @@ router.get('/:id/students', async(req, res, next) => {
             res.status(200).send(students);
         } else {
             next();
+        }
+    } catch (err) {
+        console.error(err);
+        res.status(500).send({
+            error: "Error fetching students.  Try again later."
+        });
+    }
+});
+
+router.get('/:id/roster', async(req, res, next) => {
+    try {
+        if (await getCourseById(req.params.id) === null){
+            res.status(404).send({
+                error: "Course does not exist."
+            });
+        } else{
+            const data = await getStudentsCSV(req.params.id);
+            console.log(data);
+            const fields = ['_id', 'name', 'email'];
+            const opts = { fields };
+            const csv = parse(data, opts);
+            console.log(csv);
+            res.attachment('students.csv');
+            res.status(200).send(csv);
         }
     } catch (err) {
         console.error(err);

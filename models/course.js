@@ -145,19 +145,28 @@ exports.getStudentsByCourseId = getStudentsByCourseId;
 
 async function getStudentsCSV (id) { 
   const db = getDBReference();
-  const coursesColl = db.collection('courses');
   const usersColl = db.collection('users');
   if (!ObjectId.isValid(id)) {
     return null;
   } else {
-    const students = await coursesColl
-      .find({ _id: new ObjectId(id) })
-      .project({ students: 1, _id: 0 })
-      .toArray();
-
-    const data = await usersColl
-      .find()
-    return students[0];
+    const students = await getStudentsByCourseId(id);
+    
+    if (students){
+      var inThing = [];
+      students['students'].forEach(element => {
+        inThing.push(new ObjectId(element));
+      });
+      
+      console.log(students['students']);
+      console.log(inThing);
+      const data = await usersColl
+        .find({ _id: { $in: inThing }  })
+        .project({ password: 0, role: 0})
+        .toArray();
+      return data;
+    } else {
+      return null;
+    }    
   }
 }
 exports.getStudentsCSV = getStudentsCSV;
