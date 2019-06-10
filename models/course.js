@@ -163,6 +163,7 @@ async function getStudentsCSV (id) {
         .find({ _id: { $in: inThing }  })
         .project({ password: 0, role: 0})
         .toArray();
+      console.log(data);
       return data;
     } else {
       return null;
@@ -170,3 +171,19 @@ async function getStudentsCSV (id) {
   }
 }
 exports.getStudentsCSV = getStudentsCSV;
+
+async function getAssignmentsByCourseId(id) {
+  const db = getDBReference();
+  const collection = db.collection('assignments');
+  if (!ObjectId.isValid(id)) {
+    return null;
+  } else {
+    const results = await collection
+      .find({ courseID: id })
+      .project({ courseID: 0, title: 0, points:0, due: 0 })
+      .toArray();
+    console.log(results);
+    return results;
+  }
+}
+exports.getAssignmentsByCourseId = getAssignmentsByCourseId;
