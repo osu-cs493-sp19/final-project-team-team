@@ -105,7 +105,11 @@ router.post('/', requireRoleAuth, async (req, res, next) => {
 
 
 router.patch('/:id', requireRoleAuth, requireIdAuth, async (req, res, next) => {
-    const course = await getCourseById(req.body.courseID);
+    const course = await getCourseById(req.params.id);
+
+    if (!course) {
+      next();
+    }
 
     if (req.role === 'admin' || (req.role === 'instructor' && req.user == course.instructorID)) {
         try {
@@ -173,7 +177,11 @@ router.delete('/:id', requireRoleAuth, async (req, res, next) => {
 
 
 router.post('/:id/students', requireRoleAuth, requireIdAuth, async(req, res, next) => {
-    const course = await getCourseById(req.body.courseID);
+    const course = await getCourseById(req.params.id);
+
+    if (!course) {
+      next();
+    }
 
     if (req.role === 'admin' || (req.role === 'instructor' && req.user == course.instructorID)) {
         if(req.body.add && req.body.remove) {
@@ -216,7 +224,11 @@ router.post('/:id/students', requireRoleAuth, requireIdAuth, async(req, res, nex
 });
 
 router.get('/:id/students', requireRoleAuth, requireIdAuth, async(req, res, next) => {
-    const course = await getCourseById(req.body.courseID);
+    const course = await getCourseById(req.params.id);
+
+    if (!course) {
+      next();
+    }
 
     if (req.role === 'admin' || (req.role === 'instructor' && req.user == course.instructorID)) {
         try {
@@ -240,7 +252,11 @@ router.get('/:id/students', requireRoleAuth, requireIdAuth, async(req, res, next
 });
 
 router.get('/:id/roster', requireRoleAuth, requireIdAuth, async(req, res, next) => {
-    const course = await getCourseById(req.body.courseID);
+    const course = await getCourseById(req.params.id);
+
+    if (!course) {
+      next();
+    }
 
     if (req.role === 'admin' || (req.role === 'instructor' && req.user == course.instructorID)) {
         try {

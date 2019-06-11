@@ -49,6 +49,10 @@ const upload = multer({
 router.post('/', requireRoleAuth, requireIdAuth, async (req, res, next) => {
   const course = await getCourseById(req.body.courseID);
 
+  if (!course) {
+    next();
+  }
+
   if (req.role === 'admin' || (req.role === 'instructor' && req.user == course.instructorID)) {
     if (validateAgainstSchema(req.body, AssignmentSchema)) {
       if (validateDate(req.body.due)) {
@@ -96,7 +100,14 @@ router.get('/:id', async (req, res, next) => {
 
 router.patch('/:id', requireRoleAuth, requireIdAuth, async (req, res, next) => {
   const assignment = await getAssignmentById(req.params.id);
+  if (!assignment) {
+    next();
+  }
+  
   const course = await getCourseById(assignment.courseID);
+  if (!course) {
+    next();
+  }
 
   if (req.role === 'admin' || (req.role === 'instructor' && req.user == course.instructorID)) {
     try {
@@ -144,7 +155,14 @@ router.patch('/:id', requireRoleAuth, requireIdAuth, async (req, res, next) => {
 
 router.delete('/:id', requireRoleAuth, requireIdAuth, async (req, res, next) => {
   const assignment = await getAssignmentById(req.params.id);
+  if (!assignment) {
+    next();
+  }
+  
   const course = await getCourseById(assignment.courseID);
+  if (!course) {
+    next();
+  }
 
   if (req.role === 'admin' || (req.role === 'instructor' && req.user == course.instructorID)) {
     try {
@@ -169,9 +187,15 @@ router.delete('/:id', requireRoleAuth, requireIdAuth, async (req, res, next) => 
 
 router.post('/:id/submissions', requireRoleAuth, requireIdAuth, upload.single('file'), async (req, res, next) => {
   const assignment = await getAssignmentById(req.params.id);
-  const results = await getStudentsByCourseId(assignment.courseID);
+  if (!assignment) {
+    next();
+  }
 
-  console.log(results.students);
+  const results = await getStudentsByCourseId(assignment.courseID);
+  if (!results) {
+    next();
+  }
+
   if (req.role === 'student' && results.students.includes(req.user)) {  
     if (validateAgainstSchema(req.body, SubmissionSchema)) {
       if (validateDate(req.body.timestamp)) {
@@ -217,7 +241,14 @@ router.post('/:id/submissions', requireRoleAuth, requireIdAuth, upload.single('f
 
 router.get('/:id/submissions', requireRoleAuth, requireIdAuth, async (req, res, next) => {
   const assignment = await getAssignmentById(req.params.id);
+  if (!assignment) {
+    next();
+  }
+  
   const course = await getCourseById(assignment.courseID);
+  if (!course) {
+    next();
+  }
 
   if (req.role === 'admin' || (req.role === 'instructor' && req.user == course.instructorID)) {
     try {
