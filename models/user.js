@@ -6,6 +6,7 @@ const { ObjectId } = require('mongodb');
 const { extractValidFields } = require('../lib/validation');
 const bcrypt = require('bcryptjs');
 const { getDBReference } = require('../lib/mongo');
+const { getCoursesbyInstructorID, getCoursesbyStudentID } = require('./course');
 
 const UserSchema = {
   name: { required: true },
@@ -41,8 +42,26 @@ async function getUserById(id, includePassword){
       .find({ _id: new ObjectId(id) })
       .project(projection)
       .toArray();
-    //console.log(results);
-    return results[0];
+    if(results[0].role==="student"){
+      const courses = await(getCoursesbyStudentID(id));
+      var arr = [];
+      courses.forEach(element => {
+          arr.push(element["_id"]);
+      });
+      results[0].courses = arr;
+      return results[0];
+    }else if (results[0].role==="instructor") {
+      const courses = await(getCoursesbyInstructorID(id));
+      var arr = [];
+      courses.forEach(element => {
+          arr.push(element["_id"]);
+      });
+      results[0].courses = arr;
+      return results[0];
+    }else{
+      //console.log(results);
+      return results[0];
+    }
   }
 };
 exports.getUserById = getUserById;

@@ -76,7 +76,7 @@ async function updateCourseById(id, patch) {
     return false;
   } else {
     const result = await collection.updateOne(
-      { _id: ObjectId(id)}, 
+      { _id: ObjectId(id)},
       {$set: patch}
     );
     return result.matchedCount > 0;
@@ -105,7 +105,7 @@ async function addStudentsToCourse(id, studentsList) {
     return false;
   } else {
     const result = await collection.updateOne(
-      { _id: ObjectId(id) }, 
+      { _id: ObjectId(id) },
       { $push: { students: { $each: studentsList } } }
     );
     return result.matchedCount > 0;
@@ -120,7 +120,7 @@ async function removeStudentsFromCourse(id, studentsList) {
     return false;
   } else {
     const result = await collection.updateOne(
-      { _id: ObjectId(id) }, 
+      { _id: ObjectId(id) },
       { $pull: { students: { $in: studentsList } } }
     );
     return result.matchedCount > 0;
@@ -128,7 +128,7 @@ async function removeStudentsFromCourse(id, studentsList) {
 }
 exports.removeStudentsFromCourse = removeStudentsFromCourse;
 
-async function getStudentsByCourseId (id) { 
+async function getStudentsByCourseId (id) {
   const db = getDBReference();
   const collection = db.collection('courses');
   if (!ObjectId.isValid(id)) {
@@ -143,20 +143,20 @@ async function getStudentsByCourseId (id) {
 }
 exports.getStudentsByCourseId = getStudentsByCourseId;
 
-async function getStudentsCSV (id) { 
+async function getStudentsCSV (id) {
   const db = getDBReference();
   const usersColl = db.collection('users');
   if (!ObjectId.isValid(id)) {
     return null;
   } else {
     const students = await getStudentsByCourseId(id);
-    
+
     if (students){
       var inThing = [];
       students['students'].forEach(element => {
         inThing.push(new ObjectId(element));
       });
-      
+
       console.log(students['students']);
       console.log(inThing);
       const data = await usersColl
@@ -167,7 +167,7 @@ async function getStudentsCSV (id) {
       return data;
     } else {
       return null;
-    }    
+    }
   }
 }
 exports.getStudentsCSV = getStudentsCSV;
@@ -187,3 +187,33 @@ async function getAssignmentsByCourseId(id) {
   }
 }
 exports.getAssignmentsByCourseId = getAssignmentsByCourseId;
+
+async function getCoursesbyInstructorID(id) {
+  const db = getDBReference();
+  const collection = db.collection('courses');
+  if (!ObjectId.isValid(id)) {
+    return null;
+  } else {
+    const results = await collection
+      .find({ instructorID: id })
+      .project({ students: 0, subject: 0, number: 0, title: 0, term: 0, instructorID: 0 })
+      .toArray();
+    return results;
+  }
+}
+exports.getCoursesbyInstructorID = getCoursesbyInstructorID;
+
+async function getCoursesbyStudentID(id) {
+  const db = getDBReference();
+  const collection = db.collection('courses');
+  if (!ObjectId.isValid(id)) {
+    return null;
+  } else {
+    const results = await collection
+      .find({ students: id })
+      .project({ students: 0, subject: 0, number: 0, title: 0, term: 0, instructorID: 0 })
+      .toArray();
+    return results;
+  }
+}
+exports.getCoursesbyStudentID = getCoursesbyStudentID;
