@@ -27,24 +27,14 @@ const {
   validateCourseInstructorByIds
 } = require('../models/course');
 
-const fileTypes = {
-  'text/plain':       'txt',
-  'application/pdf':  'pdf',
-  'image/jpeg':       'jpg',
-  'image/png':        'png'
-};
 const upload = multer({
   storage: multer.diskStorage({
     destination: `${__dirname}/uploads`,
     filename: (req, file, callback) => {
       const basename = crypto.pseudoRandomBytes(16).toString('hex');
-      const extension = fileTypes[file.mimetype];
-      callback(null, `${basename}.${extension}`);
+      callback(null, `${basename}`);
     }
-  }),
-  fileFilter: (req, file, callback) => {
-    callback(null, !!fileTypes[file.mimetype]);
-  }
+  })
 });
 
 router.post('/', requireRoleAuth, requireIdAuth, async (req, res, next) => {
