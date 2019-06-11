@@ -14,6 +14,7 @@ const { getCoursesPage,
         getStudentsCSV,
         getAssignmentsByCourseId,
         CourseSchema } = require('../models/course');
+const { validateInstructor } = require('../models/user');
 
 router.get('/', async (req, res) => {
     try {
@@ -127,12 +128,18 @@ router.patch('/:id', requireRoleAuth, requireIdAuth, async (req, res, next) => {
                 if (req.body.term) {
                     patch.term = req.body.term;
                 }
-                if (req.body.instructorId) {
-                    patch.instructorId = req.body.instructorId;
+                if (req.body.instructorID && await validateInstructor(req.body.instructorID)) {
+                    patch.instructorID = req.body.instructorID;
                 }
-                const successful = await updateCourseById(req.params.id, patch);
-                if (successful) {
-                    res.status(200).send({});
+                if (!Object.keys(patch).length) {
+                    res.status(400).send({
+                       error: "Request body not found or did not contain any valid fields related to courses."
+                    });
+                } else {
+                    const successful = await updateCourseById(req.params.id, patch);
+                    if (successful) {
+                        res.status(200).send({});
+                    }
                 }
             } else {
                 res.status(400).send({

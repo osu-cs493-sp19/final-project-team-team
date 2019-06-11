@@ -67,3 +67,12 @@ exports.validateUser = async function (id, password) {
   console.log(password, user.password, await bcrypt.compare(password, user.password));
   return [authenticated, user._id];
 };
+
+exports.validateInstructor = async function (id) {
+  const user = await getUserById(id);
+  if (user && (user.role == "instructor")) {
+    return true;
+  } else {
+    return false;
+  }
+}
