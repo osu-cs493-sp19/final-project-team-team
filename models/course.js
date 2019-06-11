@@ -142,3 +142,48 @@ async function getStudentsByCourseId (id) {
   }
 }
 exports.getStudentsByCourseId = getStudentsByCourseId;
+
+async function getStudentsCSV (id) { 
+  const db = getDBReference();
+  const usersColl = db.collection('users');
+  if (!ObjectId.isValid(id)) {
+    return null;
+  } else {
+    const students = await getStudentsByCourseId(id);
+    
+    if (students){
+      var inThing = [];
+      students['students'].forEach(element => {
+        inThing.push(new ObjectId(element));
+      });
+      
+      console.log(students['students']);
+      console.log(inThing);
+      const data = await usersColl
+        .find({ _id: { $in: inThing }  })
+        .project({ password: 0, role: 0})
+        .toArray();
+      console.log(data);
+      return data;
+    } else {
+      return null;
+    }    
+  }
+}
+exports.getStudentsCSV = getStudentsCSV;
+
+async function getAssignmentsByCourseId(id) {
+  const db = getDBReference();
+  const collection = db.collection('assignments');
+  if (!ObjectId.isValid(id)) {
+    return null;
+  } else {
+    const results = await collection
+      .find({ courseID: id })
+      .project({ courseID: 0, title: 0, points:0, due: 0 })
+      .toArray();
+    console.log(results);
+    return results;
+  }
+}
+exports.getAssignmentsByCourseId = getAssignmentsByCourseId;

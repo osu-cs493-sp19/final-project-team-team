@@ -64,5 +64,6 @@ async function getUserByEmail(email, includePassword){
 exports.validateUser = async function (id, password) {
   const user = await getUserByEmail(id, true);
   const authenticated = user && await bcrypt.compare(password, user.password);
+  console.log(password, user.password, await bcrypt.compare(password, user.password));
   return [authenticated, user._id];
 };
