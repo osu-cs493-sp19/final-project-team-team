@@ -23,7 +23,8 @@ const {
 
 const {
   getCourseById,
-  getStudentsByCourseId
+  getStudentsByCourseId,
+  validateCourseInstructorByIds
 } = require('../models/course');
 
 const fileTypes = {
@@ -54,20 +55,14 @@ router.post('/', requireRoleAuth, requireIdAuth, async (req, res, next) => {
   }
 
   if (req.role === 'admin' || (req.role === 'instructor' && req.user == course.instructorID)) {
-    if (validateAgainstSchema(req.body, AssignmentSchema)) {
-      if (validateDate(req.body.due)) {
-        try {
-          const id = await insertNewAssignment(req.body);
-          res.status(201).send({ id: id });
-        } catch (err) {
-          console.error(err);
-          res.status(500).send({
-            error: "Error inserting assignment into DB."
-          });
-        }
-      } else {
-        res.status(400).send({
-          error: "Request body does not contain a valid due date for assignment. Due date must be in ISO 8601 format."
+    if (validateAgainstSchema(req.body, AssignmentSchema) && validateDate(req.body.due)) {
+      try {
+        const id = await insertNewAssignment(req.body);
+        res.status(201).send({ id: id });
+      } catch (err) {
+        console.error(err);
+        res.status(500).send({
+          error: "Error inserting assignment into DB."
         });
       }
     } else {
@@ -113,7 +108,7 @@ router.patch('/:id', requireRoleAuth, requireIdAuth, async (req, res, next) => {
     try {
       var patch = {};
       if (req.body) {
-        if (req.body.courseID) {
+        if (req.body.courseID && await validateCourseInstructorByIds(req.body.courseID, course.instructorID)) {
           patch.courseID = req.body.courseID;
         }
         if (req.body.title) {
@@ -122,18 +117,18 @@ router.patch('/:id', requireRoleAuth, requireIdAuth, async (req, res, next) => {
         if (req.body.points) {
           patch.points = req.body.points;
         }
-        if (req.body.due) {
-          if (validateDate(req.body.due)) {
-            patch.due = req.body.due;
-          } else {
-            res.status(400).send({
-              error: "Request body does not contain a valid due date for assignment. Due date must be in ISO 8601 format."
-            });
+        if (req.body.due && await validateDate(req.body.due)) {
+          patch.due = req.body.due;
+        } 
+        if (!Object.keys(patch).length) {
+          res.status(400).send({
+            error: "Request body not found or did not contain any valid fields related to courses."
+          });
+        } else {
+          const successful = await updateAssignmentById(req.params.id, patch);
+          if (successful) {
+            res.status(200).send({});
           }
-        }
-        const successful = await updateAssignmentById(req.params.id, patch);
-        if (successful) {
-          res.status(200).send({});
         }
       } else {
         res.status(400).send({

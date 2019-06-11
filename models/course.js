@@ -217,3 +217,15 @@ async function getCoursesbyStudentID(id) {
   }
 }
 exports.getCoursesbyStudentID = getCoursesbyStudentID;
+
+async function validateCourseInstructorByIds(courseID, instructorID) {
+  const course = await getCourseById(courseID);
+  console.log(course);
+  if (course && (course.instructorID == instructorID)) {
+    console.log("true");
+    return true;
+  } else {
+    return false;
+  }
+}
+exports.validateCourseInstructorByIds = validateCourseInstructorByIds;
