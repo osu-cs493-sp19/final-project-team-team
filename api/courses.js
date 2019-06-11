@@ -187,21 +187,23 @@ router.post('/:id/students', requireRoleAuth, requireIdAuth, async(req, res, nex
     if (req.role === 'admin' || (req.role === 'instructor' && req.user == course.instructorID)) {
         if(req.body.add && req.body.remove) {
             try{
-                var goodToGo = 1;
+                var goodToGo = true;
                 var toAdd = req.body.add;
                 var toRemove = req.body.remove;
                 for (let index = 0; index < toAdd.length; index++) {
                     const student = await getUserById(toAdd[index],false);
-                    if(!student.name){
-                        goodToGo = 0;
+                    //console.log(toAdd[index], student);
+                    if(!student){
+                        goodToGo = false;
                     }
                 }
                 for (let index = 0; index < toRemove.length; index++) {
                     const student = await getUserById(toRemove[index],false);
                     if(!student){
-                        goodToGo = 0;
+                        goodToGo = false;
                     }
                 }
+                //console.log(goodToGo);
                 if(goodToGo){
                     var ins, rem;
                     if(toAdd.length > 0){
