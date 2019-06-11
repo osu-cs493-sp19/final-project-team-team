@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { parse } = require('json2csv');
+const { getUserById } = require('../models/user');
 const { validateAgainstSchema } = require('../lib/validation');
 const { requireRoleAuth,
         requireIdAuth } = require('../lib/auth');
@@ -178,23 +179,43 @@ router.post('/:id/students', requireRoleAuth, requireIdAuth, async(req, res, nex
     if (req.role === 'admin' || (req.role === 'instructor' && req.user == course.instructorID)) {
         if(req.body.add && req.body.remove) {
             try{
+                var goodToGo = 1;
                 var toAdd = req.body.add;
                 var toRemove = req.body.remove;
-                var ins, rem;
-                if(toAdd.length > 0){
-                    ins = await addStudentsToCourse(req.params.id, toAdd);
+                for (let index = 0; index < toAdd.length; index++) {
+                    const student = await getUserById(toAdd[index],false);
+                    if(!student.name){
+                        goodToGo = 0;
+                    }
                 }
-                if(toRemove.length > 0){
-                    rem = await removeStudentsFromCourse(req.params.id, toRemove);
+                for (let index = 0; index < toRemove.length; index++) {
+                    const student = await getUserById(toRemove[index],false);
+                    if(!student){
+                        goodToGo = 0;
+                    }
                 }
-                if (ins || rem) {
-                    res.status(200).send({});
-                } else if (await getCourseById(req.params.id)) {
+                if(goodToGo){
+                    var ins, rem;
+                    if(toAdd.length > 0){
+                        ins = await addStudentsToCourse(req.params.id, toAdd);
+                    }
+                    if(toRemove.length > 0){
+                        rem = await removeStudentsFromCourse(req.params.id, toRemove);
+                    }
+                    if (ins || rem) {
+                        res.status(200).send({});
+                    } else if (await getCourseById(req.params.id)) {
+                        res.status(400).send({
+                        error: "Request body does not contain any students to add or remove."
+                        });
+                    } else {
+                    next();
+                    }
+                }
+                else{
                     res.status(400).send({
-                    error: "Request body does not contain any students to add or remove."
+                        error: "Request body Contains at least one invalid student."
                     });
-                } else {
-                next();
                 }
             }
             catch(err){
