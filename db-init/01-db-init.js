@@ -26,11 +26,5 @@ db.users.insertMany([
     "email": "doejo@oregonstate.edu",
     "password": "$2a$08$Y00/JO/uN9n0dHKuudRX2eKksWMIHXDLzHWKuz/K67alAYsZRRike",
     "role": "admin"
-  },
-  {
-    "name": "Rob Hess",
-    "email": "hessro@oregonstate.edu",
-    "password": "$2a$08$bAKRXPs6fUPhqjZy55TIeO1e.aXud4LD81awrYncaCKJoMsg/s0c.",
-    "role": "instructor"
   }
 ]);

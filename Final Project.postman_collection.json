@@ -1,0 +1,605 @@
+{
+	"info": {
+		"_postman_id": "f0e2ee97-5c0a-4185-924b-de9d3569e857",
+		"name": "Final Project",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "localhost:8000/users",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZDAwNTY1ZjVkNzRiMjRiNzVkMGEwZjYiLCJpYXQiOjE1NjAzMDMyNjksImV4cCI6MTU2MDM4OTY2OX0.VIZlI0R0wkbZ4JvFkW4etl-E1-D5Ut0QS3yihiGqNAs",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Rob Hess\",\n    \"email\": \"hessrob@oregonstate.edu\",\n    \"password\": \"hunter2\",\n    \"role\": \"student\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8000/users",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/users/login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"hessro@oregonstate.edu\",\n\t\"password\": \"hunter2\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8000/users/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"users",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/users/:ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZDAwNTcwZGY5YjVlMjAwMTFhZjI3ZWIiLCJpYXQiOjE1NjAzMDM0NzMsImV4cCI6MTU2MDM4OTg3M30.u3yvL2lHL9nrz3nPcNHWCzUvjYiOoYeS6K-wnQLUc_c",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:8000/users/:ID",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"users",
+						":ID"
+					],
+					"variable": [
+						{
+							"key": "ID",
+							"value": "5d00570df9b5e20011af27eb"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/courses",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/courses",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"courses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/courses",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZDAwNTY1ZjVkNzRiMjRiNzVkMGEwZjYiLCJpYXQiOjE1NjAzMDMyNjksImV4cCI6MTU2MDM4OTY2OX0.VIZlI0R0wkbZ4JvFkW4etl-E1-D5Ut0QS3yihiGqNAs",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"subject\": \"CS\",\n  \"number\": 493,\n  \"title\": \"Cloud Application Development\",\n  \"term\": \"sp19\",\n  \"instructorID\": \"5d00570df9b5e20011af27eb\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8000/courses",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"courses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/courses/:ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/courses/:ID",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"courses",
+						":ID"
+					],
+					"variable": [
+						{
+							"key": "ID",
+							"value": "5d0057fef9b5e20011af27ed"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/courses/:ID",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZDAwNTcwZGY5YjVlMjAwMTFhZjI3ZWIiLCJpYXQiOjE1NjAzMDM0NzMsImV4cCI6MTU2MDM4OTg3M30.u3yvL2lHL9nrz3nPcNHWCzUvjYiOoYeS6K-wnQLUc_c",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"term\": \"wn19\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8000/courses/:ID",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"courses",
+						":ID"
+					],
+					"variable": [
+						{
+							"key": "ID",
+							"value": "5d0057fef9b5e20011af27ed"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/courses/:ID/students",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZDAwNTcwZGY5YjVlMjAwMTFhZjI3ZWIiLCJpYXQiOjE1NjAzMDM0NzMsImV4cCI6MTU2MDM4OTg3M30.u3yvL2lHL9nrz3nPcNHWCzUvjYiOoYeS6K-wnQLUc_c",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"add\": [\n    \"5d0056d0f9b5e20011af27ea\",\n    \"5d00573af9b5e20011af27ec\"\n\t],\n  \"remove\": [\n  \t]\n}"
+				},
+				"url": {
+					"raw": "localhost:8000/courses/:ID/students",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"courses",
+						":ID",
+						"students"
+					],
+					"variable": [
+						{
+							"key": "ID",
+							"value": "5d0057fef9b5e20011af27ed"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/courses/:ID/students",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZDAwNTcwZGY5YjVlMjAwMTFhZjI3ZWIiLCJpYXQiOjE1NjAzMDM0NzMsImV4cCI6MTU2MDM4OTg3M30.u3yvL2lHL9nrz3nPcNHWCzUvjYiOoYeS6K-wnQLUc_c",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:8000/courses/:ID/students",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"courses",
+						":ID",
+						"students"
+					],
+					"variable": [
+						{
+							"key": "ID",
+							"value": "5d0057fef9b5e20011af27ed"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/courses/:id/roster",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZDAwNTcwZGY5YjVlMjAwMTFhZjI3ZWIiLCJpYXQiOjE1NjAzMDM0NzMsImV4cCI6MTU2MDM4OTg3M30.u3yvL2lHL9nrz3nPcNHWCzUvjYiOoYeS6K-wnQLUc_c",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:8000/courses/:id/roster",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"courses",
+						":id",
+						"roster"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "5d0057fef9b5e20011af27ed"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/assignments",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZDAwNTcwZGY5YjVlMjAwMTFhZjI3ZWIiLCJpYXQiOjE1NjAzMDM0NzMsImV4cCI6MTU2MDM4OTg3M30.u3yvL2lHL9nrz3nPcNHWCzUvjYiOoYeS6K-wnQLUc_c",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"courseID\": \"5d0057fef9b5e20011af27ed\",\n  \"title\": \"Assignment 3\",\n  \"points\": 100,\n  \"due\": \"2019-06-14T17:00:00-07:00\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8000/assignments",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"assignments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/assignments/:ID/submissions",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZDAwNTZkMGY5YjVlMjAwMTFhZjI3ZWEiLCJpYXQiOjE1NjAzMDM0NTEsImV4cCI6MTU2MDM4OTg1MX0.xvVfzWQSRncPW3eaMzMCoXMkzhxyOi23orVrn7f7zDQ",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "assignmentID",
+							"value": "5d005d86f9b5e20011af27ee",
+							"type": "text"
+						},
+						{
+							"key": "timestamp",
+							"value": "2019-06-10T17:00:00-07:00",
+							"type": "text"
+						},
+						{
+							"key": "studentID",
+							"value": "5d0056d0f9b5e20011af27ea",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8000/assignments/:ID/submissions",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"assignments",
+						":ID",
+						"submissions"
+					],
+					"variable": [
+						{
+							"key": "ID",
+							"value": "5d005d86f9b5e20011af27ee"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/assignments/:ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/assignments/:ID",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"assignments",
+						":ID"
+					],
+					"variable": [
+						{
+							"key": "ID",
+							"value": "5d005d86f9b5e20011af27ee"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/assignments/:ID",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZDAwNTcwZGY5YjVlMjAwMTFhZjI3ZWIiLCJpYXQiOjE1NjAzMDM0NzMsImV4cCI6MTU2MDM4OTg3M30.u3yvL2lHL9nrz3nPcNHWCzUvjYiOoYeS6K-wnQLUc_c",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"Assignment 6\"\n}"
+				},
+				"url": {
+					"raw": "localhost:8000/assignments/:ID",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"assignments",
+						":ID"
+					],
+					"variable": [
+						{
+							"key": "ID",
+							"value": "5d005d86f9b5e20011af27ee"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/assignments/:ID/submissions",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZDAwNTcwZGY5YjVlMjAwMTFhZjI3ZWIiLCJpYXQiOjE1NjAzMDM0NzMsImV4cCI6MTU2MDM4OTg3M30.u3yvL2lHL9nrz3nPcNHWCzUvjYiOoYeS6K-wnQLUc_c",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:8000/assignments/:ID/submissions",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"assignments",
+						":ID",
+						"submissions"
+					],
+					"variable": [
+						{
+							"key": "ID",
+							"value": "5d005d86f9b5e20011af27ee"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/courses/:ID/assignments",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/courses/:ID/assignments",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"courses",
+						":ID",
+						"assignments"
+					],
+					"variable": [
+						{
+							"key": "ID",
+							"value": "5d0057fef9b5e20011af27ed"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/assignments/:ID",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZDAwNTcwZGY5YjVlMjAwMTFhZjI3ZWIiLCJpYXQiOjE1NjAzMDM0NzMsImV4cCI6MTU2MDM4OTg3M30.u3yvL2lHL9nrz3nPcNHWCzUvjYiOoYeS6K-wnQLUc_c",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:8000/assignments/:ID",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"assignments",
+						":ID"
+					],
+					"variable": [
+						{
+							"key": "ID",
+							"value": "5d005d86f9b5e20011af27ee"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8000/courses/:ID",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZDAwNTY1ZjVkNzRiMjRiNzVkMGEwZjYiLCJpYXQiOjE1NjAzMDMyNjksImV4cCI6MTU2MDM4OTY2OX0.VIZlI0R0wkbZ4JvFkW4etl-E1-D5Ut0QS3yihiGqNAs",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "localhost:8000/courses/:ID",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"courses",
+						":ID"
+					],
+					"variable": [
+						{
+							"key": "ID",
+							"value": "5d00661b3ef7550011055015"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
